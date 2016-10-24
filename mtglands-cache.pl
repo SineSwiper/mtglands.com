@@ -392,7 +392,6 @@ foreach my $filename (glob "style/* img/*") {
 
 say "Creating HTML...";
 foreach my $category (@LAND_CATEGORIES) {
-    next if $category eq 'Main';
     my $category_data = $LAND_TYPES{$category};
     next unless $category_data;
 
@@ -405,6 +404,11 @@ foreach my $category (@LAND_CATEGORIES) {
         );
 
         foreach my $main_type (sort keys %{ $LAND_TYPES{Main} }) {
+            # For the main category, just display the one type
+            if ($category eq 'Main') {
+                next unless $first_type eq $main_type;
+            }
+
             my $main_type_data = $LAND_TYPES{Main}{$main_type};
 
             # Build a "fake" types hash with the filtered results
@@ -517,11 +521,6 @@ sub land_type_link {
 
     # figure out the right link for this label
     my $link = simplify_name($category).'-'.simplify_name($type).'.html';
-
-    if ($category eq 'Main') {
-        # for main links, use an anchor tied to all.html
-        $link = 'all.html#'.simplify_name($type);
-    }
 
     return "<a href=\"$link\" class=\"label tag-".simplify_name($category)."\">$label</a> ";
 }
@@ -744,6 +743,9 @@ END_HTML
     $html .= <<'END_HTML';
 </div>
 </div>
+
+<h2><a href="all.html">All Lands</a></h2>
+
 <hr/>
 
 <h2>Awesome MTG/EDH Resources</h2>
