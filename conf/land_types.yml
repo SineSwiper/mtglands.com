@@ -222,6 +222,18 @@ Main:
             - example: Lonely Sandbar
             - example: Remote Isle
 
+    Keyword Lands:
+        alt_names:
+            - Ability Lands
+        matching:
+            - example: Tolaria West
+              # Bleh, still got to specify the keywords here to prevent it from bumping into
+              # the Cycling Lands.
+              text_re: >-
+                \A⦀name⦀ enters the battlefield tapped\.\R\{T\}\: Add \{[WURGB]\} to your mana
+                pool\.\R(?:Graft|Dredge|Transmute|Hellbent) —?\s?[\{\}\dWURGB]+.+
+            - example: New Benalia
+
     Hideaways:
         example: Shelldock Isle
         text_re: >-
