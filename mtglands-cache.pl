@@ -399,8 +399,11 @@ foreach my $category (@LAND_CATEGORIES) {
         my $first_type_data = $category_data->{$first_type};
         my $html_filename   = simplify_name($category).'-'.simplify_name($first_type).'.html';
 
+        my $land_type_title = land_type_label($category, $first_type);
         my $html_fh = start_html(
-            $html_filename => 'Lands filtered by '.land_type_label($category, $first_type)
+            $html_filename,
+            "Lands filtered by $land_type_title",
+            $land_type_title
         );
 
         foreach my $main_type (sort keys %{ $LAND_TYPES{Main} }) {
@@ -432,7 +435,7 @@ foreach my $category (@LAND_CATEGORIES) {
 
 # Also create an 'all.html' file with everything
 
-my $html_fh = start_html('all.html' => 'All lands, unfiltered');
+my $html_fh = start_html('all.html', 'All lands, unfiltered', 'All lands');
 
 foreach my $type (sort keys %{ $LAND_TYPES{Main} }) {
     say $html_fh build_type_html_body($type, $LAND_TYPES{Main}{$type});
@@ -526,18 +529,18 @@ sub land_type_link {
 }
 
 sub start_html {
-    my ($filename, $subheader) = @_;
+    my ($filename, $subheader, $subtitle) = @_;
 
     print "    $filename";
     open my $fh, '>:encoding(UTF-8)', "$BASE_DIR/$filename" or die "Can't open $filename: $!";
 
-    say $fh build_html_header($subheader);
+    say $fh build_html_header($subheader, $subtitle);
 
     return $fh;
 }
 
 sub build_html_header {
-    my ($subheader) = @_;
+    my ($subheader, $subtitle) = @_;
     my $html = <<'END_HTML';
 <!DOCTYPE html>
 <html>
@@ -550,7 +553,12 @@ sub build_html_header {
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="style/main.css">
     <link rel="stylesheet" href="style/mana.css">
-    <title>MTG Lands</title>
+END_HTML
+    $html .= $subtitle ?
+        "<title>MTG Lands - $subtitle</title>\n" :
+        "<title>MTG Lands</title>\n"
+    ;
+    $html .= <<'END_HTML';
 </head>
 <body>
 
@@ -558,7 +566,7 @@ sub build_html_header {
 
 END_HTML
 
-    $html .= "\n<h4>$subheader</h4>\n\n" if $subheader;
+    $html .= "\n<h4>".escape_html($subheader)."</h4>\n\n" if $subheader;
     $html .= "<hr/>";
 
     return $html;
