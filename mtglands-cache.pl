@@ -24,7 +24,10 @@ binmode(STDERR, ":utf8");
 
 ##################################################################################################
 
-my $BASE_DIR = '/var/www/mtglands.com';
+### XXX: This is a (slight) security risk.  Move these outta here...
+my $BASE_DIR  = '/var/www/mtglands.com';
+my $WWW_CHOWN = 'www-data:www-data';
+my $WWW_CHMOD = 0660;
 
 say "Loading land types data...";
 my %LAND_TYPES      = %{ LoadFile('conf/land_types.yml')  };
@@ -45,7 +48,6 @@ my $ua = LWP::UserAgent->new;
 $ua->agent('MTGLands.com/1.0 '.$ua->_agent);
 
 # Others to categorize:
-#   Future Sight Duals
 #   Other basic fetches like Terminal Moraine and Thawing Glaciers
 #   ETB Mono Lands
 
@@ -368,6 +370,7 @@ foreach my $name (sort keys %LAND_DATA) {
             open my $jpeg_fh, '>', $filename or die "Can't open $filename: $!";
             print $jpeg_fh $res->content;
             close $jpeg_fh;
+            chmodown($filename);
 
             print "\n";
         }
@@ -393,6 +396,7 @@ foreach my $name (sort keys %LAND_DATA) {
 say "Copying image/style files...";
 foreach my $filename (glob "style/* img/*") {
     copy($filename, "$BASE_DIR/$filename");
+    chmodown("$BASE_DIR/$filename");
 }
 
 say "Creating HTML...";
@@ -464,6 +468,16 @@ exit;
 
 ##################################################################################################
 
+sub chmodown {
+    my ($filename) = @_;
+    my ($uid, $gid) = split /:/, $WWW_CHOWN, 2;
+    $uid = getpwnam($uid);
+    $gid = getgrnam($gid);
+
+    chmod $WWW_CHMOD, $filename or die "Can't chmod $filename: $!";
+    chown $uid, $gid, $filename or die "Can't chown $filename: $!";
+}
+
 sub sort_color_id {
     my ($ci) = @_;
     return 0 if $ci eq '';
@@ -533,6 +547,7 @@ sub land_type_link {
     return "<a href=\"$link\" class=\"label tag-".simplify_name($category)."\">$label</a> ";
 }
 
+my $OPENED_FILENAME;
 sub start_html {
     my ($filename, $subheader, $subtitle) = @_;
 
@@ -540,6 +555,9 @@ sub start_html {
     open my $fh, '>:encoding(UTF-8)', "$BASE_DIR/$filename" or die "Can't open $filename: $!";
 
     say $fh build_html_header($subheader, $subtitle);
+
+    # XXX: Lazy hack for chmodown in end_html
+    $OPENED_FILENAME = $filename;
 
     return $fh;
 }
@@ -804,5 +822,9 @@ sub end_html {
 
     say $fh build_html_footer();
     close $fh;
+
+    chmodown("$BASE_DIR/$OPENED_FILENAME");
+    $OPENED_FILENAME = undef;
+
     print "\n";
 }
