@@ -757,6 +757,8 @@ END_HTML
     </ul>
     <li><a href="http://www.edhrec.com/">EDHREC</a></li>
     <li><a href="http://www.edhgenerals.com/">EDH Generals</a></li>
+    <li><a href="http://manabasecrafter.com/">Manabase Crafter</a>, a similar but different kind of
+    land/manabase lookup reference</li>
     <li><a href="https://mtgjson.com/">MTG JSON</a>, used to acquire all of the information on this site</li>
 </ul>
 <hr/>
