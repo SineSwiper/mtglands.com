@@ -89,9 +89,9 @@ Main:
     Manland Duals:
         example: Creeping Tar Pit
         text_re: >-
-            \A⦀name⦀ enters the battlefield tapped\.\R
-            \{T\}\: Add \{[WURGB]\} or \{[WURGB]\} to your mana pool\.\R
-            [{}0-9WURGBC]+\: .*⦀name⦀ becomes a \d\/\d \w+ and \w+ Elemental creature.+ It\'s still a land\.\z
+            \A⦀name⦀ enters the battlefield tapped\.\R\{T\}\: Add \{[WURGB]\} or \{[WURGB]\} to your mana
+            pool\.\R[{}0-9WURGBC]+\: .*⦀name⦀ becomes a \d\/\d \w+ and \w+ Elemental creature.+ It\'s still
+            a land\.\z
         alt_names:
             - Manlands
             - Elemental Lands

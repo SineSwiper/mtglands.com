@@ -259,7 +259,7 @@ foreach my $name (sort keys %LAND_DATA) {
                         next unless $re;
                         $re =~ s/⦀$_⦀/$land_data->{$_}/ge for keys %$land_data;
 
-                        #if ($type eq 'Mono Manlands' && $name eq "Faerie Conclave") {
+                        #if ($type eq 'Manland Duals' && $name eq 'Creeping Tar Pit') {
                         #    warn "Currently matching: $category / $type / $does_match\n";
                         #    warn "RE$match_type: $re\n";
                         #    warn "$key: $land_data->{$key}\n";
