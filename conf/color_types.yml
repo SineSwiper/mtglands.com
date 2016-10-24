@@ -1,0 +1,132 @@
+---
+# 0 colors
+'':
+    type: Colorless
+    name: Colorless
+
+# 1 color
+W:
+    type: Monocolor
+    name: White
+U:
+    type: Monocolor
+    name: Blue
+B:
+    type: Monocolor
+    name: Black
+R:
+    type: Monocolor
+    name: Red
+G:
+    type: Monocolor
+    name: Green
+
+# 2 color - Allied
+WU:
+    type:    Dual Color
+    name:    Azorius
+    subtype: Allied
+UB:
+    type:    Dual Color
+    name:    Dimir
+    subtype: Allied
+BR:
+    type:    Dual Color
+    name:    Rakdos
+    subtype: Allied
+RG:
+    type:    Dual Color
+    name:    Gruul
+    subtype: Allied
+WG:
+    type:    Dual Color
+    name:    Selesnya
+    subtype: Allied
+
+# 2 color - Enemy
+WB:
+    type:    Dual Color
+    name:    Orzhov
+    subtype: Enemy
+UR:
+    type:    Dual Color
+    name:    Izzet
+    subtype: Enemy
+BG:
+    type:    Dual Color
+    name:    Golgari
+    subtype: Enemy
+WR:
+    type:    Dual Color
+    name:    Boros
+    subtype: Enemy
+UG:
+    type:    Dual Color
+    name:    Simic
+    subtype: Enemy
+
+# 3 color - Shard
+WUG:
+    type:    Tri-Color
+    name:    Bant
+    subtype: Shard
+WUB:
+    type:    Tri-Color
+    name:    Esper
+    subtype: Shard
+UBR:
+    type:    Tri-Color
+    name:    Grixis
+    subtype: Shard
+BRG:
+    type:    Tri-Color
+    name:    Jund
+    subtype: Shard
+WRG:
+    type:    Tri-Color
+    name:    Naya
+    subtype: Shard
+
+# 3 color - Wedge
+WBG:
+    type:    Tri-Color
+    name:    Abzan
+    subtype: Wedge
+WUR:
+    type:    Tri-Color
+    name:    Jeskai
+    subtype: Wedge
+UBG:
+    type:    Tri-Color
+    name:    Sultai
+    subtype: Wedge
+WBR:
+    type:    Tri-Color
+    name:    Mardu
+    subtype: Wedge
+URG:
+    type:    Tri-Color
+    name:    Temur
+    subtype: Wedge
+
+# 4 color - taken from Nephilim (not sure what the official names will be)
+WUBR:
+    type: Four Color
+    name: Yore-Tiller
+UBRG:
+    type: Four Color
+    name: Glint-Eye
+WBRG:
+    type: Four Color
+    name: Dune-Brood
+WURG:
+    type: Four Color
+    name: Ink-Treader
+WUBG:
+    type: Four Color
+    name: Witch-Maw
+
+# 5 color
+WUBRG:
+    type: Domain
+    name: Domain

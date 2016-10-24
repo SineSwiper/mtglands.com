@@ -1,0 +1,53 @@
+BODY {
+    margin-left:   2em;
+    margin-bottom: 2em;
+}
+HR {
+    margin-top:    1em;
+    margin-bottom: 1em;
+}
+
+.container {
+    width: auto;
+}
+.indextags {
+    font-size: 1.5em;
+}
+
+.card-lg {
+    display: none;
+    float:   left;
+    width:   315px;
+    height:  500px;
+    margin:  10px;
+}
+.card-sm {
+    display: inline-block;
+    float:   left;
+    width:   225px;
+    height:  375px;
+    margin:  1em 0.5em;
+}
+.cardname {
+    font-weight: bold;
+}
+.tag-main          { background-color: #000; }
+.tag-coloridentity { background-color: #cdab64; }
+.tag-manapool      { background-color: #337ab7; }
+.tag-supertypes    { background-color: #5cb85c; }
+.tag-subtypes      { background-color: #5bc0de; }
+.tag-other         { background-color: #777; }
+
+.disclaimer {
+    font-size: 0.75em;
+    color:     #aaa;
+}
+
+@media (min-width: 1720px) {
+    DIV.card-lg {
+        display: inline-block;
+    }
+    DIV.card-sm {
+        display: none;
+    }
+}

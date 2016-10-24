@@ -1,0 +1,307 @@
+---
+# Examples are usually in UB or U, for no particular reason
+
+# Word of warning about the '>-' text_re: It will add a space after each line, so
+# make sure the splits happen where a space would have gone.
+Main:
+
+    # Basics
+    Basic Lands:
+        example: Island
+        type_re: '^Basic Land'
+
+    Snow Basics:
+        example: Snow-Covered Island
+        type_re: '^Basic Snow Land'
+        tags:
+            Mana Pool: Monocolor
+
+    # Dual lands
+    True Duals:
+        example: Underground Sea
+        tags:
+            Mana Pool: Dual Colors
+        alt_names:
+            - Dual Lands
+
+    Pain Lands:
+        example: Underground River
+
+    Manaless Filters:
+        example: Darkwater Catacombs
+        tags:
+            Mana Pool: Dual Colors
+        alt_names:
+            - Odyssey Filters
+            - Signet Lands
+
+    Tainted Lands:
+        example: Tainted Isle
+
+    Shock Lands:
+        example: Watery Grave
+        tags:
+            Mana Pool: Dual Colors
+
+    Bounce Duals:
+        example: Dimir Aqueduct
+        tags:
+            Mana Pool: Dual Colors
+        alt_names:
+            - Karoo Duals
+
+    Show Duals:
+        example: Choked Estuary
+        alt_names:
+            - Shadow Lands
+            - Hand Lands
+
+    Storage Duals:
+        example: Dreadship Reef
+        tags:
+            Mana Pool: Dual Colors
+
+    Tribal Duals:
+        example: Secluded Glen
+        text_re: >-
+            \AAs ⦀name⦀ enters the battlefield\, you may reveal an? \w+ card from your hand\.
+            If you don\'t\, ⦀name⦀ enters the battlefield tapped\.\R\{T\}\: Add \{[WURGB]\}
+            or \{[WURGB]\} to your mana pool\.\z
+        alt_names:
+            - Tribal Lands
+            - Lord Lands
+
+    Filter Duals:
+        example: Sunken Ruins
+        tags:
+            Mana Pool: Dual Colors
+
+    Life-Gain Duals:
+        example: Jwar Isle Refuge
+        tags:
+            Mana Pool: Dual Colors
+        alt_names:
+            - Gain Lands
+            - Life Lands
+            - Refuges
+            - Khans Taplands
+
+    Manland Duals:
+        example: Creeping Tar Pit
+        text_re: >-
+            \A⦀name⦀ enters the battlefield tapped\.\R
+            \{T\}\: Add \{[WURGB]\} or \{[WURGB]\} to your mana pool\.\R
+            [{}0-9WURGBC]+\: .*⦀name⦀ becomes a \d\/\d \w+ and \w+ Elemental creature.+ It\'s still a land\.\z
+        alt_names:
+            - Manlands
+            - Elemental Lands
+
+    Check Lands:
+        example: Drowned Catacomb
+        alt_names:
+            - Buddy Lands
+
+    Fast Lands:
+        example: Darkslick Shores
+
+    Scry Lands:
+        example: Temple of Deceit
+
+    Battle Lands:
+        example: Sunken Hollow
+        alt_names:
+            - BFZ Check Lands
+
+    Tap Duals:
+        example: Salt Marsh
+        alt_names:
+            - Taplands
+        type_re: '^Land$'
+
+    Snow Duals:
+        example: Frost Marsh
+        alt_names:
+            - Snow Taplands
+        type_re: '^Snow Land'
+
+    Gates:
+        example: Dimir Guildgate
+        alt_names:
+            - Gate Duels
+        type_re: '^Land . Gate'
+
+    Depletion Duals:
+        example: Land Cap
+        tags:
+            Mana Pool: Dual Colors
+        alt_names:
+            - Counter Lands
+            - Slow Lands
+
+    Pause Lands:
+        example: Waterveil Cavern
+        tags:
+            Mana Pool: Dual Colors
+        alt_names:
+            - Slow Lands
+            - Untap Duals
+
+    Tap Pain Lands:
+        example: Caldera Lake
+        tags:
+            Mana Pool: Dual Colors
+
+    # Fetches
+    Slow Fetches:
+        example: Bad River
+
+    Pain Fetches:
+        example: Polluted Delta
+
+    Panoramas:
+        example: Grixis Panorama
+
+    Fast Basic Fetches:
+        example: Evolving Wilds
+
+    Krosan Verge:
+        # This is in its own category, because it is awesome, but the rest of the set is still
+        # missing.
+        example: Krosan Verge
+
+    Futuresight Duals:
+        # I hate using names for these, but they are so wildly different.
+        name_re: '^(?:Grove of the Burnwillows|Horizon Canopy|Nimbus Maze|River of Tears)$'
+        tags:
+            Mana Pool: Dual Colors
+
+    # Tri-Color Land
+    Tap Tri-Lands:
+        example: Crumbling Necropolis
+        alt_names:
+            - Shard Lands
+
+    Lairs:
+        example: Dromar's Cavern
+
+    Sac Tri-Lands:
+        example: Ancient Spring
+        tags:
+            Mana Pool: Tri-Colors
+        alt_names:
+            - Saclands
+        colorIdStr_re: '^\w{3}$'
+
+    Tri-Color Filters:
+        example: Aysen Abbey
+        tags:
+            Mana Pool: Tri-Colors
+        alt_names:
+            - Homelands
+
+    # Monocolor mana + All color lands
+    Vivid Lands:
+        example: Vivid Creek
+
+    Sac Any Color:
+        example: Seafloor Debris
+
+    # Other special monocolor lands
+    Artifact Lands:
+        example: Seat of the Synod
+        text_re: '.*\{T\}\: Add \{[WURGBC]\} to your mana pool\.\z'
+        type_re: '^Artifact Land$'
+
+    Mono Bounces:
+        example: Coral Atoll
+        alt_names:
+            - Karoos
+
+    Cycling Lands:
+        example: Lonely Sandbar
+
+    Hideaways:
+        example: Shelldock Isle
+        text_re: >-
+            \AHideaway \(This land enters the battlefield tapped\. When it does\, look at the top four
+            cards of your library\, exile one face down\, then put the rest on the bottom of your
+            library\.\)\R\{T\}\: Add \{[WURGB]\} to your mana pool\.\R\{[WURGB]\}\, \{T\}\: You may play
+            the exiled card without paying its mana cost if.+
+
+    Mono Depletions Lands:
+        example: Saprazzan Skerry
+
+    Mono Storage Lands:
+        example: Sand Silos
+        tags:
+            Mana Pool: Monocolor
+
+    Mono Storage Lands (Alt):
+        example: Saprazzan Cove
+        tags:
+            Mana Pool: Monocolor
+
+    Mono Manlands:
+        example: Faerie Conclave
+        text_re: >-
+            \A⦀name⦀ enters the battlefield tapped\.\R\{T\}\: Add \{[WURGB]\} to your mana
+            pool\.\R\{1\}\{[WURGB]\}\: ⦀name⦀ becomes.+
+
+    Threshold Lands:
+        example: Cephalid Coliseum
+        text_re: >-
+            \A\{T\}\: Add \{[WURGB]\} to your mana pool\. ⦀name⦀ deals 1 damage to you\.\RThreshold \—
+            \{[WURGB]\}\, \{T\}\, Sacrifice ⦀name⦀\:.+
+
+Mana Pool:
+    Manaless:
+        text_re: '.*'
+        text_re_neg: 'Add.* to your mana pool'
+        type_re_neg: '^Basic Land$|Plains|Island|Mountain|Forest|Swamp'
+
+    Colorless:
+        matching:
+            - text_re: 'Add (?:\{\w\})?(?:\{C\}){1,}(?:\{\w\})? to your mana pool'
+            # no basic land type, for Wastes
+            - type_re: '^Basic Land$'
+
+    Monocolor:
+        matching:
+            - text_re: 'Add (?:\{C\})?\{([WURGB])\}(?:\{(?:C|\1)\})? to your mana pool'
+            - type_re: '^Basic (?:Snow )?Land — (?:Plains|Island|Mountain|Forest|Swamp)$'
+
+    Dual Colors:
+        text_re: 'Add \{[WURGB]\} or \{[WURGB]\} to your mana pool'
+
+    Tri-Colors:
+        text_re: 'Add \{[WURGB]\}, \{[WURGB]\}, or \{[WURGB]\} to your mana pool'
+
+    Any Color:
+        text_re: 'Add \w+ mana of any.* color to your mana pool'
+
+    Commander Colors:
+        text_re: 'Add to your mana pool one mana of any color in your commander.s color identity'
+
+    Conditional Colors:
+        matching:
+            - text_re: 'Add to your mana pool one mana of any (?:color|type) that .+ controls? could produce'
+            - text_re: 'Add one mana of that color to your mana pool'
+            - text_re: 'Add one mana to your mana pool of any color chosen as you drafted cards'
+
+Other:
+    ETB Tapped:
+        text_re: '(?<!, )⦀name⦀ enters the battlefield tapped\.'
+
+    Fetches:
+        text_re: 'Search your library'
+
+    Manland:
+        matching:
+            - text_re: 'It.s still a land|creature that.s still a land|Morph \{\d+\}'
+            - type_re: 'Creature'
+
+    Token Generators:
+        matching:
+            - text_re: '[pP]ut [^\.]+ creature tokens?[^\.]* onto the battlefield'
+            # New terminology, as Sept 2016
+            - text_re: 'Create [^\.]+ creature tokens?[^\.]*\.'
