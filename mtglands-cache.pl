@@ -190,43 +190,48 @@ foreach my $category (@LAND_CATEGORIES) {
     foreach my $type (sort keys %$category_data) {
         my $type_data = $category_data->{$type};
 
-        # Create a new RegExp based on the example card
-        if ($type_data->{example} && !$type_data->{text_re}) {
-            my $name      = $type_data->{example};
-            my $land_data = $LAND_DATA{$name} || die "Can't find example land card '$name' in MTG JSON for '$type'!";
-            next unless exists $land_data->{text};
+        my @matching_data = $type_data;
+        push @matching_data, @{ $type_data->{matching} } if $type_data->{matching};
 
-            my $base_re   = $land_data->{text};
-            my $quotename = quotemeta $name;
-            $base_re =~ s/
-                # find its own card name
-                (?:(?<=\W)|\A) $quotename (?=\W)
-            /⦀name⦀/gx;  # use U+2980 as a "percent-code"
+        foreach my $matching_data (@matching_data) {
+            # Create a new RegExp based on the example card
+            if ($matching_data->{example} && !$matching_data->{text_re}) {
+                my $name      = $matching_data->{example};
+                my $land_data = $LAND_DATA{$name} || die "Can't find example land card '$name' in MTG JSON for '$type'!";
+                next unless exists $land_data->{text};
 
-            $base_re = quotemeta $base_re;
-            $base_re =~ s/\\⦀/⦀/g;     # revert backslashes of code char
-            $base_re =~ s/\\ / /g;     # space escaping is excessive
-            $base_re =~ s/\\\n/\\R/g;  # use '\R' for newline escaping
+                my $base_re   = $land_data->{text};
+                my $quotename = quotemeta $name;
+                $base_re =~ s/
+                    # find its own card name
+                    (?:(?<=\W)|\A) $quotename (?=\W)
+                /⦀name⦀/gx;  # use U+2980 as a "percent-code"
 
-            ### XXX: This is a whole lot of backslashes, because of the quotemeta...
-            $base_re =~ s/
-                # mana color symbols
-                (?<=\\\{) [WURGB] (?=\\\})
-            /[WURGB]/gx;
-            $base_re =~ s!
-                # split mana color symbols
-                (?<=\\\{) [WURGB0-9]\\/[WURGB0-9] (?=\\\})
-            ![WURGB0-9]/[WURGB0-9]!gx;
-            $base_re =~ s!
-                # Phyrexian mana color symbols
-                (?<=\\\{) [WURGB0-9]P (?=\\\})
-            ![WURGB0-9]P!gx;
-            $base_re =~ s/
-                # find all basic land types, even with 'a' or 'an'
-                (?<=\W) (?:an?\s)? (?:Plains|Island|Mountain|Forest|Swamp) (?=\W)
-            /(?:an? )?(?:Plains|Island|Mountain|Forest|Swamp)/gx;
+                $base_re = quotemeta $base_re;
+                $base_re =~ s/\\⦀/⦀/g;     # revert backslashes of code char
+                $base_re =~ s/\\ / /g;     # space escaping is excessive
+                $base_re =~ s/\\\n/\\R/g;  # use '\R' for newline escaping
 
-            $type_data->{text_re} = "\\A$base_re\\z";
+                ### XXX: This is a whole lot of backslashes, because of the quotemeta...
+                $base_re =~ s/
+                    # mana color symbols
+                    (?<=\\\{) [WURGB] (?=\\\})
+                /[WURGB]/gx;
+                $base_re =~ s!
+                    # split mana color symbols
+                    (?<=\\\{) [WURGB0-9]\\/[WURGB0-9] (?=\\\})
+                ![WURGB0-9]/[WURGB0-9]!gx;
+                $base_re =~ s!
+                    # Phyrexian mana color symbols
+                    (?<=\\\{) [WURGB0-9]P (?=\\\})
+                ![WURGB0-9]P!gx;
+                $base_re =~ s/
+                    # find all basic land types, even with 'a' or 'an'
+                    (?<=\W) (?:an?\s)? (?:Plains|Island|Mountain|Forest|Swamp) (?=\W)
+                /(?:an? )?(?:Plains|Island|Mountain|Forest|Swamp)/gx;
+
+                $matching_data->{text_re} = "\\A$base_re\\z";
+            }
         }
     }
 }

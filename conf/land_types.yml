@@ -218,7 +218,9 @@ Main:
             - Karoos
 
     Cycling Lands:
-        example: Lonely Sandbar
+        matching:
+            - example: Lonely Sandbar
+            - example: Remote Isle
 
     Hideaways:
         example: Shelldock Isle
@@ -232,12 +234,9 @@ Main:
         example: Saprazzan Skerry
 
     Mono Storage Lands:
-        example: Sand Silos
-        tags:
-            Mana Pool: Monocolor
-
-    Mono Storage Lands (Alt):
-        example: Saprazzan Cove
+        matching:
+            - example: Sand Silos
+            - example: Saprazzan Cove
         tags:
             Mana Pool: Monocolor
 
