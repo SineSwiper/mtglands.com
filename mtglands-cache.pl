@@ -285,9 +285,16 @@ foreach my $name (sort keys %LAND_DATA) {
             my $does_match = 0;
             MATCH_LOOP: foreach my $matching_data (@matching_data) {
                 foreach my $match_type ('', '_neg') {
-                    foreach my $key (sort keys %$land_data) {
-                        my $re = $matching_data->{$key.'_re'.$match_type};
-                        next unless $re;
+                    foreach my $re_key (sort grep { /\w+_re$match_type$/ } keys %$matching_data) {
+                        my $key = $re_key;
+                        $key =~ s/_re$match_type$//;
+
+                        unless (exists $land_data->{$key}) {
+                            $does_match = 0;
+                            next MATCH_LOOP;
+                        }
+
+                        my $re = $matching_data->{$re_key};
                         $re =~ s/⦀$_⦀/$land_data->{$_}/ge for keys %$land_data;
 
                         #if ($type eq 'Keyword Lands' && $name eq 'Tolaria West') {

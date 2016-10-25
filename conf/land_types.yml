@@ -192,6 +192,12 @@ Main:
             - Saclands
         colorIdStr_re: '^\w{3}$'
 
+    Tribal Tri-Lands:
+        # This is another weird one...
+        example: Murmuring Bosk
+        tags:
+            Mana Pool: Tri-Colors
+
     Tri-Color Filters:
         example: Aysen Abbey
         tags:
@@ -212,20 +218,18 @@ Main:
         text_re: '.*\{T\}\: Add \{[WURGBC]\} to your mana pool\.\z'
         type_re: '^Artifact Land$'
 
-    Mono Bounces:
-        example: Coral Atoll
-        alt_names:
-            - Karoos
-
     Cycling Lands:
         matching:
             - example: Lonely Sandbar
             - example: Remote Isle
 
-    Perm Type Legendaries:
-        example: Tolarian Academy
-        text_re: '\A\{T\}\: Add \{[WURGB]\} to your mana pool for each .+ you control\.\z'
-        type_re: Legendary
+    Hideaways:
+        example: Shelldock Isle
+        text_re: >-
+            \AHideaway \(This land enters the battlefield tapped\. When it does\, look at the top four
+            cards of your library\, exile one face down\, then put the rest on the bottom of your
+            library\.\)\R\{T\}\: Add \{[WURGB]\} to your mana pool\.\R\{[WURGB]\}\, \{T\}\: You may play
+            the exiled card without paying its mana cost if.+
 
     Keyword Lands:
         alt_names:
@@ -239,13 +243,10 @@ Main:
                 pool\.\R(?:Graft|Dredge|Transmute|Hellbent) —?\s?[\{\}\dWURGB]+.+
             - example: New Benalia
 
-    Hideaways:
-        example: Shelldock Isle
-        text_re: >-
-            \AHideaway \(This land enters the battlefield tapped\. When it does\, look at the top four
-            cards of your library\, exile one face down\, then put the rest on the bottom of your
-            library\.\)\R\{T\}\: Add \{[WURGB]\} to your mana pool\.\R\{[WURGB]\}\, \{T\}\: You may play
-            the exiled card without paying its mana cost if.+
+    Mono Bounces:
+        example: Coral Atoll
+        alt_names:
+            - Karoos
 
     Mono Depletions Lands:
         example: Saprazzan Skerry
@@ -263,12 +264,31 @@ Main:
             \A⦀name⦀ enters the battlefield tapped\.\R\{T\}\: Add \{[WURGB]\} to your mana
             pool\.\R\{1\}\{[WURGB]\}\: ⦀name⦀ becomes.+
 
+    Perm Type Legendaries:
+        example: Tolarian Academy
+        text_re: '\A\{T\}\: Add \{[WURGB]\} to your mana pool for each .+ you control\.\z'
+        type_re: Legendary
+
+    Perm Utility Lands:
+        example: Moonring Island
+        text_re: >-
+            \A\(\{T\}\: Add \{[WURGB]\} to your mana pool\.\)\R⦀name⦀ enters the battlefield tapped\.\R\{[WURGB]\}\,
+            \{T\}\: .+\. Activate this ability only if you control two or more
+            (?:[Ww]hite|[Bb]lue|[Bb]lack|[Rr]ed|[Gg]reen) permanents\.\z
+        type_re: 'Plains|Island|Mountain|Forest|Swamp'
+        alt_names:
+            - Shadowmoor Utility Lands
+
     Replacement Lands:
         example: Soldevi Excavations
         text_re: >-
             \AIf ⦀name⦀ would enter the battlefield\, sacrifice an? (?:untapped )?(?:Plains|Island|Mountain|Forest|Swamp)
             instead\. If you do\, put ⦀name⦀ onto the battlefield\. If you don\'t\, put it into its owner\'s
             graveyard\.\R\{T\}\: Add [\{\}WURGBC]*\{[WURGB]\} to your mana pool\.\R.+
+
+    Spell Landmarks:
+        # I hate using names for these, but they are so wildly different.
+        name_re: '^(?:Emeria, the Sky Ruin|Magosi, the Waterveil|Crypt of Agadeem|Valakut, the Molten Pinnacle|Oran-Rief, the Vastwood)$'
 
     Threshold Lands:
         example: Cephalid Coliseum
