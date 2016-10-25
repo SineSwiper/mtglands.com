@@ -258,11 +258,29 @@ Main:
             \A⦀name⦀ enters the battlefield tapped\.\R\{T\}\: Add \{[WURGB]\} to your mana
             pool\.\R\{1\}\{[WURGB]\}\: ⦀name⦀ becomes.+
 
+    Replacement Lands:
+        example: Soldevi Excavations
+        text_re: >-
+            \AIf ⦀name⦀ would enter the battlefield\, sacrifice an? (?:untapped )?(?:Plains|Island|Mountain|Forest|Swamp)
+            instead\. If you do\, put ⦀name⦀ onto the battlefield\. If you don\'t\, put it into its owner\'s
+            graveyard\.\R\{T\}\: Add [\{\}WURGBC]*\{[WURGB]\} to your mana pool\.\R.+
+
     Threshold Lands:
         example: Cephalid Coliseum
         text_re: >-
             \A\{T\}\: Add \{[WURGB]\} to your mana pool\. ⦀name⦀ deals 1 damage to you\.\RThreshold \—
             \{[WURGB]\}\, \{T\}\, Sacrifice ⦀name⦀\:.+
+
+    # Special colorless lands
+    Blighted Lands:
+        example: Blighted Cataract
+        text_re: >-
+            \A\{T\}\: Add \{C\} to your mana pool\.\R\{\d\}\{[WURGB]\}\, \{T\}\, Sacrifice ⦀name⦀\:.+
+
+    # Special manaless lands
+    Banding Lands:
+        example: Seafarer's Quay
+
 
 Mana Pool:
     Manaless:

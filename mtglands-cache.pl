@@ -229,8 +229,12 @@ foreach my $category (@LAND_CATEGORIES) {
                 ![WURGB0-9]P!gx;
                 $base_re =~ s/
                     # find all basic land types, even with 'a' or 'an'
-                    (?<=\W) (?:an?\s)? (?:Plains|Island|Mountain|Forest|Swamp) (?=\W)
+                    (?:(?<=\W)|^) (?:an?\s)? (?:Plains|Island|Mountain|Forest|Swamp) (?=\W)
                 /(?:an? )?(?:Plains|Island|Mountain|Forest|Swamp)/gx;
+                $base_re =~ s/
+                    # find all colors
+                    (?:(?<=\W)|^) (?:[Ww]hite|[Bb]lue|[Bb]lack|[Rr]ed|[Gg]reen) (?=\W)
+                /(?:[Ww]hite|[Bb]lue|[Bb]lack|[Rr]ed|[Gg]reen)/gx;
 
                 $matching_data->{text_re} = "\\A$base_re\\z";
             }
