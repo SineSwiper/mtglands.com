@@ -222,6 +222,11 @@ Main:
             - example: Lonely Sandbar
             - example: Remote Isle
 
+    Perm Type Legendaries:
+        example: Tolarian Academy
+        text_re: '\A\{T\}\: Add \{[WURGB]\} to your mana pool for each .+ you control\.\z'
+        type_re: Legendary
+
     Keyword Lands:
         alt_names:
             - Ability Lands
