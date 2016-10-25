@@ -32,7 +32,7 @@ my $WWW_CHMOD = 0660;
 say "Loading land types data...";
 my %LAND_TYPES      = %{ LoadFile('conf/land_types.yml')  };
 my @LAND_CATEGORIES = (
-    'Main', 'Color Identity', 'Mana Pool', 'Supertypes', 'Subtypes', 'Other'  # in order
+    'Main', 'Color Identity', 'Mana Pool', 'Supertypes', 'Subtypes', 'Restricted', 'Banned', 'Other'  # in order
 );
 
 say "Loading color types data...";
@@ -55,27 +55,29 @@ $ua->agent('MTGLands.com/1.0 '.$ua->_agent);
 
 # NOTE: We are using the AllSets.json data because it has more fields about the sets that might be
 # useful.  It's larger, but is especially nice for being able to use the latest card printed.
+#
+# We're also using the Extra set, because it has legality.
 
 ### Load up the MTG JSON data ###
 
 say "Loading JSON data...";
 
 # Download it if we have to
-unless (-s 'AllSets.json' && -M 'AllSets.json' < 1) {
-    my $url = 'https://mtgjson.com/json/AllSets.json.zip';
+my $json_filename = 'AllSets-x.json';
+unless (-s $json_filename && -M $json_filename < 1) {
+    my $url = "https://mtgjson.com/json/$json_filename.zip";
     print "    $url";
 
     my $req = HTTP::Request->new(GET => $url);
     my $res = $ua->request($req);
 
     if ($res->is_success) {
-        my $filename = 'AllSets.json';
         my $zip_data = $res->content;
 
-        print " => $filename";
+        print " => $json_filename";
 
-        open my $json_fh, '>', $filename or die "Can't open $filename: $!";
-        unzip \$zip_data, $json_fh       or die "Can't unzip $filename: $UnzipError";
+        open my $json_fh, '>', $json_filename or die "Can't open $json_filename: $!";
+        unzip \$zip_data, $json_fh            or die "Can't unzip $json_filename: $UnzipError";
         close $json_fh;
 
         print "\n";
@@ -87,7 +89,7 @@ unless (-s 'AllSets.json' && -M 'AllSets.json' < 1) {
 
 my $json = JSON::XS->new->utf8;  # raw data needs to be undecoded UTF-8
 
-open my $json_fh, '<', 'AllSets.json' or die "Can't open AllSets.json: $!";
+open my $json_fh, '<', $json_filename or die "Can't open $json_filename: $!";
 $/ = undef;
 my $raw_json = <$json_fh>;
 close $json_fh;
@@ -151,6 +153,24 @@ foreach my $set (
             $color_id .= $L if first { $_ eq $L } @{ $card_data->{colorIdentity} };
         }
         $card_data->{colorIdStr} = $color_id;
+
+        # Legalities in an couple of easier-to-use strings
+        $card_data->{restricted} = '';
+        $card_data->{banned}     = '';
+
+        if ($card_data->{legalities}) {
+            foreach my $legal_hash (
+                sort { $a->{format} cmp $b->{format} }
+                @{ $card_data->{legalities} }
+            ) {
+                # only look at formats people actually care about
+                next unless $legal_hash->{format} =~ /Vintage|Legacy|Modern|Standard|Commander/;
+                my $F = substr($legal_hash->{format}, 0, 1);
+
+                $card_data->{restricted} .= $F if $legal_hash->{legality} eq 'Restricted';
+                $card_data->{banned}     .= $F if $legal_hash->{legality} eq 'Banned';
+            }
+        }
 
         # MagicCards.info is our base source for large images and URLs
         my $mci_num = $card_data->{mciNumber} || $card_data->{number};
@@ -321,6 +341,10 @@ foreach my $name (sort keys %LAND_DATA) {
     # Supertypes / Subtypes
     $land_data->{langTags}{Supertypes} = $land_data->{supertypes};
     $land_data->{langTags}{Subtypes}   = $land_data->{subtypes};
+
+    # Restricted / Banned
+    $land_data->{langTags}{Restricted} = [ $land_data->{restricted} ] if $land_data->{restricted};
+    $land_data->{langTags}{Banned}     = [ $land_data->{banned}     ] if $land_data->{banned};
 
     # Make sure each land matches correctly
     foreach my $category ('Main', 'Mana Pool', 'Color Identity') {
@@ -523,8 +547,9 @@ sub land_type_label {
 
     # Special category prefixes
     my $label =
-        $category eq 'Mana Pool'      ? 'MP: ' :
-        $category eq 'Color Identity' ? 'CI: ' :
+        $category eq 'Mana Pool'         ? 'MP: ' :
+        $category eq 'Color Identity'    ? 'CI: ' :
+        $category =~ /Restricted|Banned/ ? "$category: " :
         ''
     ;
 
@@ -678,10 +703,6 @@ sub build_type_html_body {
 
 sub build_index_html_body {
     my $html = '';
-my @LAND_CATEGORIES = (
-    'Main', 'Color Identity', 'Mana Pool', 'Supertypes', 'Subtypes', 'Other'  # in order
-);
-
 
     $html .= <<'END_HTML';
 <h2>Main Land Types</h2>
@@ -723,7 +744,16 @@ END_HTML
     $subtype_html .= land_type_link('Color Identity', $_)."\n" for @color_subtypes;
     $name_html    .= land_type_link('Color Identity', $_)."\n" for @color_names;
 
-    $html .= "<div class=\"row indextags\">\n$_</div>" for ($type_html, $subtype_html, $name_html);
+    $html .= <<"END_HTML";
+<h4>Color Count</h4>
+<div class=\"row indextags\">\n$type_html</div>
+
+<h4>Subtypes</h4>
+<div class=\"row indextags\">\n$subtype_html</div>
+
+<h4>Identity</h4>
+<div class=\"row indextags\">\n$name_html</div>
+END_HTML
 
     $html .= <<'END_HTML';
 </div>
@@ -746,9 +776,10 @@ END_HTML
 </div>
 </div>
 
-<h2>Supertypes / Subtypes</h2>
+<h2>Card Types</h2>
 
 <div class="container">
+<h4>Supertypes</h4>
 <div class="row indextags">
 END_HTML
 
@@ -756,10 +787,41 @@ END_HTML
         $html .= land_type_link('Supertypes', $type)."\n";
     }
 
-    $html .= "</div>\n<div class=\"row indextags\">\n";
+    $html .= <<"END_HTML";
+</div>
+
+<h4>Subtypes</h4>
+<div class=\"row indextags\">
+END_HTML
 
     foreach my $type (sort keys %{ $LAND_TYPES{Subtypes} }) {
         $html .= land_type_link('Subtypes', $type)."\n";
+    }
+
+    $html .= <<'END_HTML';
+</div>
+</div>
+
+<h2>Legalities</h2>
+
+<div class="container">
+<h4>Restricted</h4>
+<div class="row indextags">
+END_HTML
+
+    foreach my $type (sort keys %{ $LAND_TYPES{Restricted} }) {
+        $html .= land_type_link('Restricted', $type)."\n";
+    }
+
+    $html .= <<"END_HTML";
+</div>
+
+<h4>Banned</h4>
+<div class=\"row indextags\">
+END_HTML
+
+    foreach my $type (sort keys %{ $LAND_TYPES{Banned} }) {
+        $html .= land_type_link('Banned', $type)."\n";
     }
 
     $html .= <<'END_HTML';

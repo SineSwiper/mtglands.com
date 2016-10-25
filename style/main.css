@@ -36,6 +36,8 @@ HR {
 .tag-manapool      { background-color: #337ab7; }
 .tag-supertypes    { background-color: #5cb85c; }
 .tag-subtypes      { background-color: #5bc0de; }
+.tag-restricted    { background-color: #f0ad4e; }
+.tag-banned        { background-color: #d9534f; }
 .tag-other         { background-color: #777; }
 
 .disclaimer {

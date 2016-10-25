@@ -25,7 +25,8 @@ say "Loading JSON data...";
 
 my $json = JSON::XS->new->utf8;  # raw data needs to be undecoded UTF-8
 
-open my $json_fh, '<', 'AllSets.json' or die "Can't open AllSets.json: $!";
+my $json_filename = 'AllSets-x.json';
+open my $json_fh, '<', $json_filename or die "Can't open $json_filename: $!";
 $/ = undef;
 my $raw_json = <$json_fh>;
 close $json_fh;
