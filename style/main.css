@@ -10,6 +10,10 @@ HR {
 .container {
     width: auto;
 }
+.row {
+    margin-bottom: 1em;
+    padding-left:  15px;
+}
 .indextags {
     font-size: 1.5em;
 }
