@@ -593,6 +593,12 @@ sub start_html {
 
 sub build_html_header {
     my ($subheader, $subtitle) = @_;
+
+    if ($subtitle) {
+        $subtitle =~ s!</?span.*?>!!g;  # no HTML in title
+        $subtitle =~ s!\s+! !g;
+    }
+
     my $html = <<'END_HTML';
 <!DOCTYPE html>
 <html>
@@ -618,7 +624,8 @@ END_HTML
 
 END_HTML
 
-    $html .= "\n<h4>".escape_html($subheader)."</h4>\n\n" if $subheader;
+    # No HTML escaping, since mana symbols might be in here
+    $html .= "\n<h4>$subheader</h4>\n\n" if $subheader;
     $html .= "<hr/>";
 
     return $html;
