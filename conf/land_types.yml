@@ -243,6 +243,11 @@ Main:
                 pool\.\R(?:Graft|Dredge|Transmute|Hellbent) —?\s?[\{\}\dWURGB]+.+
             - example: New Benalia
 
+    Legendary Assist Lands:
+        example: "Minamo, School at Water's Edge"
+        text_re: '\A\{T\}\: Add \{[WURGB]\} to your mana pool\.\R\{[WURGB]\}\, \{T\}\: .+legendary.+\z'
+        type_re: Legendary
+
     Mono Bounces:
         example: Coral Atoll
         alt_names:
