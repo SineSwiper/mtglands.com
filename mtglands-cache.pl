@@ -32,7 +32,7 @@ my $WWW_CHMOD = 0660;
 say "Loading land types data...";
 my %LAND_TYPES      = %{ LoadFile('conf/land_types.yml')  };
 my @LAND_CATEGORIES = (
-    'Main', 'Color Identity', 'Mana Pool', 'Supertypes', 'Subtypes', 'Restricted', 'Banned', 'Other'  # in order
+    'Main', 'Color Identity', 'Color Identity (True)', 'Mana Pool', 'Supertypes', 'Subtypes', 'Restricted', 'Banned', 'Other'  # in order
 );
 my @MPG_ORDER = (
     'Manaless', 'Colorless', 'Monocolor', 'Dual Colors', 'Tri-Colors', 'Any Color',
@@ -46,6 +46,23 @@ foreach my $id (sort keys %COLOR_TYPES) {
     my $color_type = $COLOR_TYPES{$id};
     $COLOR_NAMES{ $color_type->{name} } = $color_type;
     $color_type->{id} = $id;
+
+    # Figure out a true color identity, including all of its subsets/supersets
+    $color_type->{subsets}   = {};
+    foreach my $other_id (sort keys %COLOR_TYPES) {
+        my $passes_check = 1;
+        foreach my $C (split //, $other_id) {
+            $passes_check = 0 unless $id =~ /$C/;
+        }
+        next unless $passes_check;
+
+        $color_type->{subsets}{$other_id} = $COLOR_TYPES{$other_id};
+        weaken $color_type->{subsets}{$other_id};
+
+        $COLOR_TYPES{$other_id}{supersets}    //= {};
+        $COLOR_TYPES{$other_id}{supersets}{$id} = $color_type;
+        weaken $COLOR_TYPES{$other_id}{supersets}{$id};
+    }
 }
 
 my $ua = LWP::UserAgent->new;
@@ -349,6 +366,20 @@ foreach my $name (sort keys %LAND_DATA) {
         uniq grep { defined } map { $color_type->{$_} } qw/ type subtype name /
     ];
 
+    # (True) CI
+    foreach my $ci_id (
+        sort { sort_color_id($a) <=> sort_color_id($b) }
+        keys %{ $color_type->{supersets} }
+    ) {
+        my $ci_name      = $COLOR_TYPES{$ci_id}{name};
+        my $ci_true_type = $LAND_TYPES{'Color Identity (True)'}{$ci_name} //= {};
+        $ci_true_type->{name}       //= $ci_name;
+        $ci_true_type->{cards}      //= {};
+        $ci_true_type->{cards}{$name} = $land_data;
+        $ci_true_type->{noTags}       = 1;
+        $ci_true_type->{headerSuffix} = ' (including subsets)';
+    }
+
     # Supertypes / Subtypes
     $land_data->{landTags}{Supertypes} = $land_data->{supertypes};
     $land_data->{landTags}{Subtypes}   = $land_data->{subtypes};
@@ -375,10 +406,11 @@ foreach my $name (sort keys %LAND_DATA) {
         next unless $land_data->{landTags}{$category};
 
         foreach my $type (@{ $land_data->{landTags}{$category} }) {
-            $LAND_TYPES{$category}{$type}        //= {};
-            $LAND_TYPES{$category}{$type}{name}  //= $type;
-            $LAND_TYPES{$category}{$type}{cards} //= {};
-            $LAND_TYPES{$category}{$type}{cards}{$name} = $land_data;
+            my $type_data = $LAND_TYPES{$category}{$type} //= {};
+            $type_data->{name}       //= $type;
+            $type_data->{cards}      //= {};
+            $type_data->{cards}{$name} = $land_data;
+
         }
     }
 }
@@ -448,10 +480,11 @@ foreach my $category (@LAND_CATEGORIES) {
         my $first_type_data = $category_data->{$first_type};
         my $html_filename   = simplify_name($category).'-'.simplify_name($first_type).'.html';
 
+        $first_type_data->{headerSuffix} //= '';
         my $land_type_title = land_type_label($category, $first_type);
         my $html_fh = start_html(
             $html_filename,
-            "Lands filtered by $land_type_title",
+            "Lands filtered by $land_type_title".$first_type_data->{headerSuffix},
             $land_type_title
         );
 
@@ -588,14 +621,14 @@ sub land_type_label {
     # Special category prefixes
     my $label =
         $category eq 'Mana Pool'         ? 'MP: ' :
-        $category eq 'Color Identity'    ? 'CI: ' :
+        $category =~ /^Color Identity/   ? 'CI: ' :
         $category =~ /Restricted|Banned/ ? "$category: " :
         ''
     ;
 
     # compose a label with mana icons
     my $color_type = $COLOR_NAMES{$type};
-    if ($category eq 'Color Identity' && $color_type) {
+    if ($category =~ /^Color Identity/ && $color_type) {
         my $id = $color_type->{id} || 'C';
         $label .= "<span class=\"mana s".lc($_)."\"></span>" for split //, $id;
         $label .= ' ';
@@ -775,25 +808,28 @@ END_HTML
 <div class="container">
 END_HTML
 
-    my (@color_types, @color_subtypes, @color_names);
+    my (@color_types, @color_subtypes, @color_names, @trueci_names);
     foreach my $type (
         sort { sort_color_id($a) <=> sort_color_id($b) }
         keys %COLOR_TYPES
     ) {
         my $color_type = $COLOR_TYPES{$type};
-        next if $color_type->{type} eq 'Four Color';  # none exist yet...
 
-        push @color_types,    $color_type->{type}    unless $color_type->{type} eq $color_type->{name};
-        push @color_subtypes, $color_type->{subtype} if $color_type->{subtype};
-        push @color_names,    $color_type->{name};
+        unless ($color_type->{type} eq 'Four Color') {  # none exist yet...
+            push @color_types,    $color_type->{type}    unless $color_type->{type} eq $color_type->{name};
+            push @color_subtypes, $color_type->{subtype} if $color_type->{subtype};
+            push @color_names,    $color_type->{name};
+        }
+        push @trueci_names, $color_type->{name};
     }
     @color_types    = uniq @color_types;
     @color_subtypes = uniq @color_subtypes;
 
-    my ($type_html, $subtype_html, $name_html) = ('', '', '');
+    my ($type_html, $subtype_html, $name_html, $trueci_html) = ('', '', '', '');
     $type_html    .= land_type_link('Color Identity', $_)."\n" for @color_types;
     $subtype_html .= land_type_link('Color Identity', $_)."\n" for @color_subtypes;
     $name_html    .= land_type_link('Color Identity', $_)."\n" for @color_names;
+    $trueci_html  .= land_type_link('Color Identity (True)', $_)."\n" for @trueci_names;
 
     $html .= <<"END_HTML";
 <h4>Color Count</h4>
@@ -802,8 +838,11 @@ END_HTML
 <h4>Subtypes</h4>
 <div class=\"row indextags\">\n$subtype_html</div>
 
-<h4>Identity</h4>
+<h4>Identity (Exact)</h4>
 <div class=\"row indextags\">\n$name_html</div>
+
+<h4>Identity (Full)</h4>
+<div class=\"row indextags\">\n$trueci_html</div>
 END_HTML
 
     $html .= <<'END_HTML';

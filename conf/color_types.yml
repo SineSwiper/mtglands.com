@@ -109,22 +109,23 @@ URG:
     name:    Temur
     subtype: Wedge
 
-# 4 color - taken from Nephilim (not sure what the official names will be)
+# 4 color - not official, but it's pretty much what everybody in Commander 2016 discussions have
+# been using...
 WUBR:
     type: Four Color
-    name: Yore-Tiller
+    name: Nongreen
 UBRG:
     type: Four Color
-    name: Glint-Eye
+    name: Nonwhite
 WBRG:
     type: Four Color
-    name: Dune-Brood
+    name: Nonblue
 WURG:
     type: Four Color
-    name: Ink-Treader
+    name: Nonblack
 WUBG:
     type: Four Color
-    name: Witch-Maw
+    name: Nonred
 
 # 5 color
 WUBRG:

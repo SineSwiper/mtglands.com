@@ -36,7 +36,8 @@ HR {
     font-weight: bold;
 }
 .tag-main          { background-color: #000; }
-.tag-coloridentity { background-color: #cdab64; }
+.tag-coloridentity     { background-color: #cdab64; }
+.tag-coloridentitytrue { background-color: #cdab64; }
 .tag-manapool      { background-color: #337ab7; }
 .tag-supertypes    { background-color: #5cb85c; }
 .tag-subtypes      { background-color: #5bc0de; }
