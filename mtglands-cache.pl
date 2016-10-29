@@ -12,7 +12,7 @@ use HTML::Escape   qw( escape_html );
 use HTTP::Request;
 use IO::Uncompress::Unzip qw( unzip $UnzipError );
 use JSON::XS;
-use List::AllUtils qw( first uniq any none sum );
+use List::AllUtils qw( first uniq any none sum max );
 use LWP;
 use Scalar::Util   qw( weaken );
 use YAML::XS       qw( LoadFile );
@@ -536,8 +536,10 @@ sub sort_mpg_avg {
     my %mpg2sort = map { $_ => $i++ } @MPG_ORDER;
 
     my $sum = sum(
-        map     { $mpg2sort{$_} }
-        map     { @{ $_->{landTags}{'Mana Pool'} } }
+        map     {
+            my @tags = @{ $_->{landTags}{'Mana Pool'} };
+            max( map { $mpg2sort{$_} } @tags );
+        }
         values %{ $type_data->{cards} }
     );
 
