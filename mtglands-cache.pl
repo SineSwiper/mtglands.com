@@ -12,7 +12,7 @@ use HTML::Escape   qw( escape_html );
 use HTTP::Request;
 use IO::Uncompress::Unzip qw( unzip $UnzipError );
 use JSON::XS;
-use List::AllUtils qw( first uniq any none );
+use List::AllUtils qw( first uniq any none sum );
 use LWP;
 use Scalar::Util   qw( weaken );
 use YAML::XS       qw( LoadFile );
@@ -33,6 +33,10 @@ say "Loading land types data...";
 my %LAND_TYPES      = %{ LoadFile('conf/land_types.yml')  };
 my @LAND_CATEGORIES = (
     'Main', 'Color Identity', 'Mana Pool', 'Supertypes', 'Subtypes', 'Restricted', 'Banned', 'Other'  # in order
+);
+my @MPG_ORDER = (
+    'Manaless', 'Colorless', 'Monocolor', 'Dual Colors', 'Tri-Colors', 'Any Color',
+    'Commander Colors', 'Conditional Colors'
 );
 
 say "Loading color types data...";
@@ -372,6 +376,7 @@ foreach my $name (sort keys %LAND_DATA) {
 
         foreach my $type (@{ $land_data->{langTags}{$category} }) {
             $LAND_TYPES{$category}{$type}        //= {};
+            $LAND_TYPES{$category}{$type}{name}  //= $type;
             $LAND_TYPES{$category}{$type}{cards} //= {};
             $LAND_TYPES{$category}{$type}{cards}{$name} = $land_data;
         }
@@ -450,7 +455,11 @@ foreach my $category (@LAND_CATEGORIES) {
             $land_type_title
         );
 
-        foreach my $main_type (sort keys %{ $LAND_TYPES{Main} }) {
+        foreach my $main_type (
+            sort  { sort_mpg_avg($LAND_TYPES{Main}{$b}) <=> sort_mpg_avg($LAND_TYPES{Main}{$a}) }
+            sort
+            keys %{ $LAND_TYPES{Main} }
+        ) {
             # For the main category, just display the one type
             if ($category eq 'Main') {
                 next unless $first_type eq $main_type;
@@ -481,7 +490,11 @@ foreach my $category (@LAND_CATEGORIES) {
 
 my $html_fh = start_html('all.html', 'All lands, unfiltered', 'All lands');
 
-foreach my $type (sort keys %{ $LAND_TYPES{Main} }) {
+foreach my $type (
+    sort  { sort_mpg_avg($LAND_TYPES{Main}{$b}) <=> sort_mpg_avg($LAND_TYPES{Main}{$a}) }
+    sort
+    keys %{ $LAND_TYPES{Main} }
+) {
     say $html_fh build_type_html_body($type, $LAND_TYPES{Main}{$type});
 }
 
@@ -511,6 +524,24 @@ sub chmodown {
 
     chmod $WWW_CHMOD, $filename or die "Can't chmod $filename: $!";
     chown $uid, $gid, $filename or die "Can't chown $filename: $!";
+}
+
+sub sort_mpg_avg {
+    my ($type_data) = @_;
+    my $total = scalar values %{ $type_data->{cards} };
+    return -1 unless $total;
+    return -1 if $type_data->{name} eq 'Other Lands';
+
+    my $i = 0;
+    my %mpg2sort = map { $_ => $i++ } @MPG_ORDER;
+
+    my $sum = sum(
+        map     { $mpg2sort{$_} }
+        map     { @{ $_->{langTags}{'Mana Pool'} } }
+        values %{ $type_data->{cards} }
+    );
+
+    return $sum / $total;  # avg MP generation
 }
 
 sub sort_color_id {
@@ -725,7 +756,11 @@ sub build_index_html_body {
 <div class="row indextags">
 END_HTML
 
-    foreach my $type (sort keys %{ $LAND_TYPES{Main} }) {
+    foreach my $type (
+        sort  { sort_mpg_avg($LAND_TYPES{Main}{$b}) <=> sort_mpg_avg($LAND_TYPES{Main}{$a}) }
+        sort
+        keys %{ $LAND_TYPES{Main} }
+    ) {
         $html .= land_type_link('Main', $type)."\n";
     }
 
@@ -778,11 +813,7 @@ END_HTML
 <div class="row indextags">
 END_HTML
 
-    # Just sort this one manually...
-    foreach my $type (
-        'Colorless', 'Monocolor', 'Dual Colors', 'Tri-Colors', 'Any Color',
-        'Commander Colors', 'Conditional Colors'
-    ) {
+    foreach my $type (@MPG_ORDER) {
         $html .= land_type_link('Mana Pool', $type)."\n";
     }
 
