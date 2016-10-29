@@ -322,11 +322,11 @@ foreach my $name (sort keys %LAND_DATA) {
             next unless $does_match;
 
             # If we got this far, it must have passed
-            $land_data->{langTags}{$category} //= [];
-            push @{ $land_data->{langTags}{$category} }, $type;
+            $land_data->{landTags}{$category} //= [];
+            push @{ $land_data->{landTags}{$category} }, $type;
 
             # Remove dupes
-            $land_data->{langTags}{$category} = [ uniq @{ $land_data->{langTags}{$category} } ];
+            $land_data->{landTags}{$category} = [ uniq @{ $land_data->{landTags}{$category} } ];
 
             # Add to the card list within the type
             $type_data->{cards} //= {};
@@ -336,8 +336,8 @@ foreach my $name (sort keys %LAND_DATA) {
             # The Main category usually has add-ons to clarify the other categories
             if ($type_data->{tags}) {
                 foreach my $tag_cat (sort keys %{ $type_data->{tags} }) {
-                    $land_data->{langTags}{$tag_cat} //= [];
-                    push @{ $land_data->{langTags}{$tag_cat} }, $type_data->{tags}{$tag_cat};
+                    $land_data->{landTags}{$tag_cat} //= [];
+                    push @{ $land_data->{landTags}{$tag_cat} }, $type_data->{tags}{$tag_cat};
                 }
             }
         }
@@ -345,36 +345,36 @@ foreach my $name (sort keys %LAND_DATA) {
 
     # Color identity
     my $color_type = $land_data->{colorIdType} = $COLOR_TYPES{ $land_data->{colorIdStr} };
-    $land_data->{langTags}{'Color Identity'} = [
+    $land_data->{landTags}{'Color Identity'} = [
         uniq grep { defined } map { $color_type->{$_} } qw/ type subtype name /
     ];
 
     # Supertypes / Subtypes
-    $land_data->{langTags}{Supertypes} = $land_data->{supertypes};
-    $land_data->{langTags}{Subtypes}   = $land_data->{subtypes};
+    $land_data->{landTags}{Supertypes} = $land_data->{supertypes};
+    $land_data->{landTags}{Subtypes}   = $land_data->{subtypes};
 
     # Restricted / Banned
-    $land_data->{langTags}{Restricted} = [ $land_data->{restricted} ] if $land_data->{restricted};
-    $land_data->{langTags}{Banned}     = [ $land_data->{banned}     ] if $land_data->{banned};
+    $land_data->{landTags}{Restricted} = [ $land_data->{restricted} ] if $land_data->{restricted};
+    $land_data->{landTags}{Banned}     = [ $land_data->{banned}     ] if $land_data->{banned};
 
     # Make sure each land matches correctly
     foreach my $category ('Main', 'Mana Pool', 'Color Identity') {
         ### XXX: Too many of these right now...
         next if $category eq 'Main';
 
-        warn "Didn't match $category for land card '$name'!\n" unless $land_data->{langTags}{$category};
+        warn "Didn't match $category for land card '$name'!\n" unless $land_data->{landTags}{$category};
     }
 
     # If it didn't match a main category, put it in an unsorted one
-    unless ($land_data->{langTags}{Main}) {
-        $land_data->{langTags}{Main} = [ 'Other Lands' ];
+    unless ($land_data->{landTags}{Main}) {
+        $land_data->{landTags}{Main} = [ 'Other Lands' ];
     }
 
     # Add the other auto-generated tags into %LAND_TYPES, too
     foreach my $category (@LAND_CATEGORIES) {
-        next unless $land_data->{langTags}{$category};
+        next unless $land_data->{landTags}{$category};
 
-        foreach my $type (@{ $land_data->{langTags}{$category} }) {
+        foreach my $type (@{ $land_data->{landTags}{$category} }) {
             $LAND_TYPES{$category}{$type}        //= {};
             $LAND_TYPES{$category}{$type}{name}  //= $type;
             $LAND_TYPES{$category}{$type}{cards} //= {};
@@ -537,7 +537,7 @@ sub sort_mpg_avg {
 
     my $sum = sum(
         map     { $mpg2sort{$_} }
-        map     { @{ $_->{langTags}{'Mana Pool'} } }
+        map     { @{ $_->{landTags}{'Mana Pool'} } }
         values %{ $type_data->{cards} }
     );
 
@@ -700,7 +700,7 @@ sub build_type_html_body {
 
         $card_info_html .= '<div class="cardtags">'."\n";
         foreach my $category (@LAND_CATEGORIES) {
-            my $category_tags = $land_data->{langTags}{$category};
+            my $category_tags = $land_data->{landTags}{$category};
             next unless $category_tags;
 
             foreach my $tag (@$category_tags) {
