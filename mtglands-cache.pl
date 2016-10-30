@@ -715,8 +715,8 @@ sub build_type_html_body {
     }
 
     $html .= "<div class=\"container\">\n";
+    $html .= "<div class=\"row\">\n";
 
-    my $card_counter = 0;
     foreach my $name (
         sort { sort_color_id($LAND_DATA{$a}{colorIdStr}) <=> sort_color_id($LAND_DATA{$b}{colorIdStr}) }
         sort { $LAND_DATA{$b}{setData}{releaseDateEpoch} <=> $LAND_DATA{$a}{setData}{releaseDateEpoch} }
@@ -724,11 +724,6 @@ sub build_type_html_body {
         keys %{ $type_data->{cards} }
     ) {
         my $land_data = $LAND_DATA{$name};
-        $card_counter++;
-
-        if ($card_counter == 1) {
-            $html .= "<div class=\"row\">\n";
-        }
 
         # Figure out the card info tags first
         my $card_info_html = '<div class="cardname">'.escape_html($name)."</div>\n";
@@ -764,17 +759,9 @@ sub build_type_html_body {
             "</div>\n"
         ;
         $html .= "</div>\n";
-
-        if ($card_counter >= 5) {
-            $html .= "</div>\n";
-            $card_counter = 0;
-        }
     }
 
-    if ($card_counter) {
-        $html .= "</div>\n";
-    }
-
+    $html .= "</div>\n";
     $html .= "</div>\n";
     $html .= "<hr/>\n";
 
