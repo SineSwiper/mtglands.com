@@ -176,6 +176,7 @@ foreach my $set (
         $card_data->{colorIdStr} = $color_id;
 
         # Legalities in an couple of easier-to-use strings
+        $card_data->{legal}      = '';
         $card_data->{restricted} = '';
         $card_data->{banned}     = '';
 
@@ -185,11 +186,10 @@ foreach my $set (
                 @{ $card_data->{legalities} }
             ) {
                 # only look at formats people actually care about
-                next unless $legal_hash->{format} =~ /Vintage|Legacy|Modern|Standard|Commander/;
-                my $F = substr($legal_hash->{format}, 0, 1);
+                next unless $legal_hash->{format} =~ /^(?:Vintage|Legacy|Modern|Standard|Commander)$/;
 
-                $card_data->{restricted} .= $F if $legal_hash->{legality} eq 'Restricted';
-                $card_data->{banned}     .= $F if $legal_hash->{legality} eq 'Banned';
+                my $F = substr($legal_hash->{format}, 0, 1);
+                $card_data->{ lc $legal_hash->{legality} } .= $F;
             }
         }
 
@@ -465,8 +465,8 @@ foreach my $name (sort keys %LAND_DATA) {
 
 ### Build HTML pages based on the lesser categories, with the Main categories looped on each page
 
-say "Copying image/style files...";
-foreach my $filename (glob "style/* img/*") {
+say "Copying image/style/script files...";
+foreach my $filename (glob "script/* style/* img/*") {
     copy($filename, "$BASE_DIR/$filename");
     chmodown("$BASE_DIR/$filename");
 }
@@ -693,6 +693,9 @@ sub build_html_header {
         ga('create', 'UA-86684306-1', 'auto');
         ga('send', 'pageview');
     </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="script/js.cookie.js"></script>
+    <script src="script/main.js"></script>
 END_HTML
     $html .= $subtitle ?
         "<title>MTG Lands - $subtitle</title>\n" :
@@ -701,7 +704,17 @@ END_HTML
     $html .= <<'END_HTML';
 </head>
 <body>
-
+<form id="form-filters">
+    Show only: <select name="legal">
+        <option value="all" selected>All cards</option>
+END_HTML
+    foreach my $format (qw/Vintage Commander Legacy Modern Standard/) {
+        my $F = substr($format, 0, 1);
+        $html .= "        <option value=\"$F\">Legal in $format</option>\n";
+    }
+    $html .= <<'END_HTML';
+    </select>
+</form>
 <h1><a href="/">MTG Lands</a></h1>
 
 END_HTML
@@ -717,7 +730,8 @@ sub build_type_html_body {
     my ($header, $type_data) = @_;
     return '' unless $type_data->{cards} && %{ $type_data->{cards} };
 
-    my $html = "\n<h2><a name=\"".simplify_name($header)."\"></a>$header</h2>\n\n";
+    my $html = "\n<div class=\"cardsection\">\n";
+    $html .= "<h2><a name=\"".simplify_name($header)."\"></a>$header</h2>\n\n";
 
     if ($type_data->{alt_names}) {
         $html .= "\n<h4>Also known as: ".join(', ', @{$type_data->{alt_names}})."</h4>\n\n";
@@ -749,8 +763,11 @@ sub build_type_html_body {
         }
         $card_info_html .= "</div>\n";
 
+        # Add the legalities to the main card DIV for easy filtering
+        my $legal_classes = join ' ', map { "legal-$_" } split //, $land_data->{legal};
+        $html .= "<div class=\"card $legal_classes\">\n";
+
         # Use two different types of images, depending if it's on a large screen or not
-        $html .= "<div class=\"card\">\n";
         $html .=
             '<div class="card-sm">'.
             '<a href="'.$land_data->{infoURL}.'">'.
@@ -773,6 +790,7 @@ sub build_type_html_body {
     $html .= "</div>\n";
     $html .= "</div>\n";
     $html .= "<hr/>\n";
+    $html .= "</div>\n";
 
     return $html;
 }

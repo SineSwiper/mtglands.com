@@ -7,6 +7,11 @@ HR {
     margin-bottom: 1em;
 }
 
+#form-filters {
+    float:         right;
+    margin-right:  2em;
+}
+
 .container {
     margin-left:   0;
     margin-right:  0;
