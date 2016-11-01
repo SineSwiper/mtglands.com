@@ -222,6 +222,7 @@ Main:
         matching:
             - example: Lonely Sandbar
             - example: Remote Isle
+            - example: Blasted Landscape
 
     Hideaways:
         example: Shelldock Isle
@@ -307,6 +308,16 @@ Main:
         text_re: >-
             \A\{T\}\: Add \{C\} to your mana pool\.\R\{\d\}\{[WURGB]\}\, \{T\}\, Sacrifice ⦀name⦀\:.+
 
+    Eldrazi Lands:
+        example: Eldrazi Temple
+        # This might be a bit vague...
+        text_re: '[cC]olorless (?:spell|Eldrazi|creature)'
+        colorIdStr_re: '^$'
+
+    Copy Lands:
+        example: Vesuva
+        text_re: '⦀name⦀ becomes a copy|⦀name⦀ enter the battlefield.+as a copy'
+
     # Special manaless lands
     Banding Lands:
         example: Seafarer's Quay
@@ -346,6 +357,8 @@ Mana Pool:
             - text_re: 'Add to your mana pool one mana of any (?:color|type) that .+ controls? could produce'
             - text_re: 'Add one mana of that color to your mana pool'
             - text_re: 'Add one mana to your mana pool of any color chosen as you drafted cards'
+            - text_re: 'Spend this mana only'
+            - text_re: 'Choose a color\. Add to your mana pool'
 
 Other:
     ETB Tapped:
