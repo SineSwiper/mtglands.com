@@ -224,6 +224,12 @@ Main:
             - example: Remote Isle
             - example: Blasted Landscape
 
+    ETB Spell Lands:
+        example: Halimar Depths
+        text_re: >-
+            \A⦀name⦀ enters the battlefield tapped\.\RWhen ⦀name⦀ enters the battlefield\,
+            .+\.\R\{T\}\: Add \{[WURGB]\} to your mana pool\.\z
+
     Hideaways:
         example: Shelldock Isle
         text_re: >-
