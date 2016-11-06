@@ -166,7 +166,8 @@ foreach my $set (
         # Extra data to add
         $card_data->{setData} = $set_data;
         weaken $card_data->{setData};
-        $card_data->{setName} = $set_data->{name};
+        $card_data->{setName}     = $set_data->{name};
+        $card_data->{printingStr} = join ',', @{$card_data->{printings}};
 
         # Color identity in a easier WUBRG string
         my $color_id = '';

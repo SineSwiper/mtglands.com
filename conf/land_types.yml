@@ -314,6 +314,23 @@ Main:
         text_re: '[cC]olorless (?:spell|Eldrazi|creature)'
         colorIdStr_re: '^$'
 
+    Innistrad Landmarks:
+        example: Nephalia Drownyard
+        text_re: >-
+            \A\{T\}\: Add \{C\} to your mana pool\.\R(?:\{[\dX]\})?\{[WURGB]\}\{[WURGB]\}(?:\, \{T\})?(?:\, .+)?\:
+            .+\.\z
+        printingStr_re: (?:ISD|DKA|AVR)
+        type_re: '^Land$'
+
+    Ravnica Landmarks:
+        # If this gets muddled, I may have to fall back to a name_re or printingStr_re.
+        example: Duskmantle, House of Shadow
+        name_re: ', '
+        text_re: >-
+            \A\{T\}\: Add \{C\} to your mana pool\.\R(?:\{\d\})?\{[WURGB]\}\{[WURGB]\}(?:\, \{T\})?\:
+            .+\.\z
+        type_re: '^Land$'
+
     Copy Lands:
         example: Vesuva
         text_re: '⦀name⦀ becomes a copy|⦀name⦀ enter the battlefield.+as a copy'
