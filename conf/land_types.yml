@@ -292,7 +292,7 @@ Main:
             instead\. If you do\, put ⦀name⦀ onto the battlefield\. If you don\'t\, put it into its owner\'s
             graveyard\.\R\{T\}\: Add [\{\}WURGBC]*\{[WURGB]\} to your mana pool\.\R.+
 
-    Spell Landmarks:
+    Zendikar Landmarks:
         # I hate using names for these, but they are so wildly different.
         name_re: '^(?:Emeria, the Sky Ruin|Magosi, the Waterveil|Crypt of Agadeem|Valakut, the Molten Pinnacle|Oran-Rief, the Vastwood)$'
 
