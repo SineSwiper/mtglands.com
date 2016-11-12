@@ -700,6 +700,7 @@ END_HTML
     Color Identity: <select name="ci">
         <option value="all" selected>All cards</option>
 END_HTML
+    my $optgroup;
     foreach my $type (
         sort { sort_color_id($a) <=> sort_color_id($b) }
         keys %COLOR_TYPES
@@ -708,10 +709,18 @@ END_HTML
         my $id         = $color_type->{id} || 'C';
         my $label      = "$id | ".$color_type->{name};
 
-        $html .= "        <option value=\"$id\">$label</option>\n";
+        # Display optgroups
+        unless ($optgroup && $optgroup eq $color_type->{type}) {
+            $html .= "        </optgroup>\n" if $optgroup;
+            $optgroup = $color_type->{type};
+            $html .= "        <optgroup label=\"$optgroup\">\n";
+        }
+
+        $html .= "            <option value=\"$id\">$label</option>\n";
     }
 
     $html .= <<'END_HTML';
+        </optgroup>
     </select>
 </form>
 <h1><a href="/">MTG Lands</a></h1>
