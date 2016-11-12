@@ -32,7 +32,7 @@ my $WWW_CHMOD = 0660;
 say "Loading land types data...";
 my %LAND_TYPES      = %{ LoadFile('conf/land_types.yml')  };
 my @LAND_CATEGORIES = (
-    'Main', 'Color Identity', 'Color Identity (True)', 'Mana Pool', 'Supertypes', 'Subtypes', 'Restricted', 'Banned', 'Other'  # in order
+    'Main', 'Color Identity', 'Mana Pool', 'Supertypes', 'Subtypes', 'Restricted', 'Banned', 'Other'  # in order
 );
 my @MPG_ORDER = (
     'Manaless', 'Colorless', 'Monocolor', 'Dual Colors', 'Tri-Colors', 'Any Color',
@@ -67,10 +67,6 @@ foreach my $id (sort keys %COLOR_TYPES) {
 
 my $ua = LWP::UserAgent->new;
 $ua->agent('MTGLands.com/1.0 '.$ua->_agent);
-
-# Others to categorize:
-#   Other basic fetches like Terminal Moraine and Thawing Glaciers
-#   ETB Mono Lands
 
 ##################################################################################################
 
@@ -366,20 +362,6 @@ foreach my $name (sort keys %LAND_DATA) {
     $land_data->{landTags}{'Color Identity'} = [
         uniq grep { defined } map { $color_type->{$_} } qw/ type subtype name /
     ];
-
-    # (True) CI
-    foreach my $ci_id (
-        sort { sort_color_id($a) <=> sort_color_id($b) }
-        keys %{ $color_type->{supersets} }
-    ) {
-        my $ci_name      = $COLOR_TYPES{$ci_id}{name};
-        my $ci_true_type = $LAND_TYPES{'Color Identity (True)'}{$ci_name} //= {};
-        $ci_true_type->{name}       //= $ci_name;
-        $ci_true_type->{cards}      //= {};
-        $ci_true_type->{cards}{$name} = $land_data;
-        $ci_true_type->{noTags}       = 1;
-        $ci_true_type->{headerSuffix} = ' (including subsets)';
-    }
 
     # Supertypes / Subtypes
     $land_data->{landTags}{Supertypes} = $land_data->{supertypes};
@@ -840,7 +822,7 @@ END_HTML
 <div class="container">
 END_HTML
 
-    my (@color_types, @color_subtypes, @color_names, @trueci_names);
+    my (@color_types, @color_subtypes, @color_names);
     foreach my $type (
         sort { sort_color_id($a) <=> sort_color_id($b) }
         keys %COLOR_TYPES
@@ -852,16 +834,14 @@ END_HTML
             push @color_subtypes, $color_type->{subtype} if $color_type->{subtype};
             push @color_names,    $color_type->{name};
         }
-        push @trueci_names, $color_type->{name};
     }
     @color_types    = uniq @color_types;
     @color_subtypes = uniq @color_subtypes;
 
-    my ($type_html, $subtype_html, $name_html, $trueci_html) = ('', '', '', '');
+    my ($type_html, $subtype_html, $name_html) = ('', '', '');
     $type_html    .= land_type_link('Color Identity', $_)."\n" for @color_types;
     $subtype_html .= land_type_link('Color Identity', $_)."\n" for @color_subtypes;
     $name_html    .= land_type_link('Color Identity', $_)."\n" for @color_names;
-    $trueci_html  .= land_type_link('Color Identity (True)', $_)."\n" for @trueci_names;
 
     $html .= <<"END_HTML";
 <h4>Color Count</h4>
@@ -872,9 +852,6 @@ END_HTML
 
 <h4>Identity (Exact)</h4>
 <div class=\"row indextags\">\n$name_html</div>
-
-<h4>Identity (Full)</h4>
-<div class=\"row indextags\">\n$trueci_html</div>
 END_HTML
 
     $html .= <<'END_HTML';
