@@ -946,6 +946,7 @@ END_HTML
     <li>Tolarian Community College's Excellent Commander Mana Base videos:</li>
     <ul>
         <li><a href="https://www.youtube.com/watch?v=UleH4wxzONA">5 Color Decks</a></li>
+        <li><a href="https://www.youtube.com/watch?v=5DSddyFCqPk">4 Color Decks</a></li>
         <li><a href="https://www.youtube.com/watch?v=ifig4xSp0kA">3 Color Decks</a></li>
         <li><a href="https://www.youtube.com/watch?v=MDc4v7sDaQY">2 Color Decks</a></li>
     </ul>
