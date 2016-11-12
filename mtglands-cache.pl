@@ -655,6 +655,10 @@ sub build_html_header {
         $subtitle =~ s!\s+! !g;
     }
 
+    my $description = $subheader;
+    $description =~ s!</?span.*?>!!g;  # no HTML in description
+    $description =~ s!\s+! !g;
+
     my $html = <<'END_HTML';
 <!DOCTYPE html>
 <html>
@@ -662,7 +666,9 @@ sub build_html_header {
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="description" content="MTGLands.com: All of the lands, all up-to-date, all categorized, all dynamically generated" />
+END_HTML
+    $html .= "<meta name=\"description\" content=\"MTGLands.com: $description\" />\n";
+    $html .= <<'END_HTML';
     <meta name="keywords" content="mtg,lands,dual lands,shock lands,pain lands,manlands" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" />
