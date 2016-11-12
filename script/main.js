@@ -64,6 +64,20 @@ function setFilterCookie ($select) {
     Cookies.set( $select.attr('name'), $select.val() );
 }
 
+function formatColors (opt) {
+    if (opt.text.indexOf('|') < 0) return opt.text;
+
+    var items      = opt.text.split(/\s*\|\s*/);
+    var colorsHTML = '<span>';
+
+    for (var pos = 0; pos < items[0].length; pos++) {
+        var color = items[0].substr(pos, 1);
+        colorsHTML += '<span class="mana s' + color.toLowerCase() + '"></span>';
+    }
+
+    return $( colorsHTML + ' ' + items[1] + '</span>' );
+}
+
 $(function() {
     var $selects = $('#form-filters select');
 
@@ -76,4 +90,15 @@ $(function() {
     });
 
     filterAll();
+
+    $selects.filter('[name=legal]').select2({
+        minimumResultsForSearch: -1,
+        width: 'resolve'
+    });
+    $selects.filter('[name=ci]').select2({
+        templateResult:    formatColors,
+        templateSelection: formatColors,
+        minimumResultsForSearch: -1,
+        width: 'resolve'
+    });
 });

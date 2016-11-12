@@ -12,6 +12,27 @@ HR {
     text-align:    right;
     margin-right:  2em;
 }
+#form-filters .select2 {
+    text-align:    left;
+}
+#form-filters SELECT {
+    width:         13em;
+}
+
+/* Fix Select2's width/height/padding problems */
+SPAN.select2-container SPAN.select2-selection--single {
+    height:      auto;
+    padding-top: 0.15em;
+}
+SPAN.select2-container--default SPAN.select2-selection--single SPAN.select2-selection__rendered {
+    line-height: 125%;
+}
+SPAN.select2-container--default SPAN.select2-selection--single SPAN.select2-selection__arrow {
+    height:      90%;
+}
+LI.select2-results__option {
+    padding:     0 0 0 0.5em;
+}
 
 .container {
     margin-left:   0;
@@ -59,6 +80,18 @@ HR {
 .disclaimer {
     font-size: 0.75em;
     color:     #aaa;
+}
+
+@media (max-width: 600px) {
+    #form-filters {
+        font-size: 0.75em;
+    }
+    #form-filters SELECT {
+        width:     10em;
+    }
+    .select2-dropdown {
+        font-size: 0.75em;
+    }
 }
 
 @media (min-width: 1240px) {
