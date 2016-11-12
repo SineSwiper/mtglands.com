@@ -1,19 +1,50 @@
 function filterAll () {
-    // TODO: This might apply to other selectors
+    // Start off with all cards and then filter everything down
+    $('DIV.cardsection, DIV.card').show();
+
+    // Legality filters
     var legal = Cookies.get('legal') || 'all';
-    filterCardClass(
-        legal == 'all' ? 'all' : 'legal-' + legal
-    );
+    filterCardClass('.legal-' + legal);
+
+    // Color Identity filters (including subsets)
+    var ci    = Cookies.get('ci') || 'all';
+    if (ci == 'all' || ci == 'WUBRG') {
+        // Do nothing
+    }
+    else if (ci == 'C') {
+        filterCardClass('.ci-C');
+    }
+    else {
+        // Figure out every color combination subset
+        var colors      = ci.split('');
+        var colorCombos = ['C'];  // 0 = C
+        var bitmapMax   = 2 ** ci.length - 1;
+
+        for (var comboNum = 1; comboNum <= bitmapMax; comboNum++) {
+            var color = '';
+
+            // Convert to binary with zero-padding
+            var bitmap = ( '00000' + comboNum.toString(2) ).slice( -ci.length ).split('');
+
+            for (var pos = 0; pos < colors.length; pos++) {
+                if (bitmap[pos] == 1) color += colors[pos];
+            }
+
+            colorCombos.push(color);
+        }
+
+        // Filter by every combination of CI classes
+        var cls = jQuery.map( colorCombos, function( a ) { return '.ci-' + a } ).join(',');
+        filterCardClass(cls);
+    }
 }
 
 function filterCardClass (cls) {
     if ( ! $('DIV.cardsection').length ) return 0;
-
-    $('DIV.cardsection, DIV.card').show();
     if (cls == 'all') return 1;
 
     // Hide the negative set
-    $('DIV.card').not('.' + cls).hide();
+    $('DIV.card').not(cls).hide();
 
     // Hide sections without cards
     $('DIV.cardsection').each(function() {

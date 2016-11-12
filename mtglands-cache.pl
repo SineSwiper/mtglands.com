@@ -706,13 +706,29 @@ END_HTML
 </head>
 <body>
 <form id="form-filters">
-    Show only: <select name="legal">
+    Legality: <select name="legal">
         <option value="all" selected>All cards</option>
 END_HTML
     foreach my $format (qw/Vintage Commander Legacy Modern Standard/) {
         my $F = substr($format, 0, 1);
         $html .= "        <option value=\"$F\">Legal in $format</option>\n";
     }
+    $html .= <<'END_HTML';
+    </select><br>
+    Color Identity: <select name="ci">
+        <option value="all" selected>All cards</option>
+END_HTML
+    foreach my $type (
+        sort { sort_color_id($a) <=> sort_color_id($b) }
+        keys %COLOR_TYPES
+    ) {
+        my $color_type = $COLOR_TYPES{$type};
+        my $id         = $color_type->{id} || 'C';
+        my $label      = "$id | ".$color_type->{name};
+
+        $html .= "        <option value=\"$id\">$label</option>\n";
+    }
+
     $html .= <<'END_HTML';
     </select>
 </form>
@@ -764,9 +780,10 @@ sub build_type_html_body {
         }
         $card_info_html .= "</div>\n";
 
-        # Add the legalities to the main card DIV for easy filtering
+        # Add the legalities and color identity to the main card DIV for easy filtering
         my $legal_classes = join ' ', map { "legal-$_" } split //, $land_data->{legal};
-        $html .= "<div class=\"card $legal_classes\">\n";
+        my $ci_class      = 'ci-'.($land_data->{colorIdStr} || 'C');
+        $html .= "<div class=\"card $ci_class $legal_classes\">\n";
 
         # Use two different types of images, depending if it's on a large screen or not
         $html .=
