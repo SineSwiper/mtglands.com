@@ -4,7 +4,7 @@ function filterAll () {
 
     // Legality filters
     var legal = Cookies.get('legal') || 'all';
-    filterCardClass('.legal-' + legal);
+    if (legal != 'all') filterCardClass('.legal-' + legal);
 
     // Color Identity filters (including subsets)
     var ci    = Cookies.get('ci') || 'all';
