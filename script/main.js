@@ -92,12 +92,26 @@ $(function() {
     filterAll();
 
     $selects.filter('[name=legal]').select2({
+        placeholder: {
+            id:   'all',
+            text: 'All cards',
+        },
+        allowClear: true,
+
         minimumResultsForSearch: -1,
         width: 'resolve'
     });
+
     $selects.filter('[name=ci]').select2({
         templateResult:    formatColors,
         templateSelection: formatColors,
+
+        placeholder: {
+            id:   'all',
+            text: 'All cards',
+        },
+        allowClear: true,
+
         minimumResultsForSearch: -1,
         width: 'resolve'
     });
