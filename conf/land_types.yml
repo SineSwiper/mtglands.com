@@ -127,7 +127,7 @@ Main:
     Gates:
         example: Dimir Guildgate
         alt_names:
-            - Gate Duels
+            - Gate Duals
         type_re: '^Land . Gate'
 
     Depletion Duals:
