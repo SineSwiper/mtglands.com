@@ -816,6 +816,9 @@ sub build_index_html_body {
     my $html = '';
 
     $html .= <<'END_HTML';
+
+<h2><a href="all.html">All Lands</a></h2>
+
 <h2>Main Land Types</h2>
 
 <div class="container">
@@ -952,8 +955,6 @@ END_HTML
     $html .= <<'END_HTML';
 </div>
 </div>
-
-<h2><a href="all.html">All Lands</a></h2>
 
 <hr/>
 
