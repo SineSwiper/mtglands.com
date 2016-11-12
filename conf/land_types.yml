@@ -250,6 +250,12 @@ Main:
                 pool\.\R(?:Graft|Dredge|Transmute|Hellbent) —?\s?[\{\}\dWURGB]+.+
             - example: New Benalia
 
+    'Legend(ary) Lands':
+        example: Tolaria
+        text_re: '\A\{T\}\: Add \{[WURGB]\} to your mana pool\.\R\{T\}\: .+\z'
+        type_re: Legendary
+        printingStr_re: LEG
+
     Legendary Assist Lands:
         example: "Minamo, School at Water's Edge"
         text_re: '\A\{T\}\: Add \{[WURGB]\} to your mana pool\.\R\{[WURGB]\}\, \{T\}\: .+legendary.+\z'
