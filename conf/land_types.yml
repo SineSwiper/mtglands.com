@@ -230,6 +230,8 @@ Main:
             - example: Lonely Sandbar
             - example: Remote Isle
             - example: Blasted Landscape
+            # This is "Basic landcycling", but it fits better here than "Other Lands"
+            - example: Ash Barrens
 
     ETB Spell Lands:
         example: Halimar Depths
