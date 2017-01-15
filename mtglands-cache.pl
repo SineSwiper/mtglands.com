@@ -434,10 +434,10 @@ foreach my $name (sort keys %LAND_DATA) {
             warn "Can't download $remote_url: ".$res->status_line."\n";
 
             # Try to use the other as an alternate
-            if    ($prefix eq 'lg' && -s "$BASE_DIR/".$land_data->{'localSmImgURL'}) {
+            if    ($prefix eq 'lg') {
                 $land_data->{'localLgImgURL'} = $land_data->{'localSmImgURL'};
             }
-            elsif ($prefix eq 'sm' && -s "$BASE_DIR/".$land_data->{'localLgImgURL'}) {
+            elsif ($prefix eq 'sm') {
                 $land_data->{'localSmImgURL'} = $land_data->{'localLgImgURL'};
             }
         }
