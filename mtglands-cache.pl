@@ -668,6 +668,8 @@ sub build_html_header {
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 END_HTML
     $html .= "<meta name=\"description\" content=\"MTGLands.com: $description\" />\n";
+
+    # NOTE: The Google Analytics code still needs to be in the HEAD tag...
     $html .= <<'END_HTML';
     <meta name="keywords" content="mtg,lands,dual lands,shock lands,pain lands,manlands" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
@@ -683,10 +685,6 @@ END_HTML
         ga('create', 'UA-86684306-1', 'auto');
         ga('send', 'pageview');
     </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-    <script src="script/js.cookie.js"></script>
-    <script src="script/main.js"></script>
 END_HTML
     $html .= $subtitle ?
         "<title>MTG Lands - $subtitle</title>\n" :
@@ -993,6 +991,10 @@ return <<'END_HTML';
 Wizards of the Coast, nor any of the sites linked.</small>
 
 </body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js" async></script>
+<script src="script/js.cookie.js" async></script>
+<script src="script/main.js" async></script>
 </html>
 END_HTML
 }
