@@ -417,3 +417,7 @@ Other:
             - text_re: '[pP]ut [^\.]+ creature tokens?[^\.]* onto the battlefield'
             # New terminology, as Sept 2016
             - text_re: 'Create [^\.]+ creature tokens?[^\.]*\.'
+
+    # We can't do numerical comparisons here, so the script does it for us
+    New Lands:
+       isNew_re: 1

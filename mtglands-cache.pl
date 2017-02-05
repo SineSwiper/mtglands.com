@@ -149,7 +149,7 @@ foreach my $set (
 
         $LAND_DATA{$name} = $card_data;
 
-        #if ($name eq 'Forest') {
+        #if ($name eq 'Spire of Industry') {
         #    warn Dumper $card_data;
         #    local $Data::Dumper::Maxdepth = 1;
         #    warn Dumper $set_data;
@@ -189,6 +189,13 @@ foreach my $set (
                 $card_data->{ lc $legal_hash->{legality} } .= $F;
             }
         }
+
+        # Mark any new cards
+        $card_data->{isNew} =
+            $set_data->{releaseDateEpoch} >= (time - 365 * 24*60*60) &&  # released at most a year ago
+            scalar @{$card_data->{printings}} == 1                       # only in this set
+            ? 1 : 0
+        ;
 
         # MagicCards.info is our base source for large images and URLs
         my $mci_num = $card_data->{mciNumber} || $card_data->{number};
