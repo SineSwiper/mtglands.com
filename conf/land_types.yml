@@ -158,6 +158,9 @@ Main:
         tags:
             Mana Pool: Dual Colors
 
+    Cycling Duals:
+        example: Fetid Pools
+
     # Fetches
     Slow Fetches:
         example: Bad River
