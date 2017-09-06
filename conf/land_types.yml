@@ -236,6 +236,9 @@ Main:
             # This is "Basic landcycling", but it fits better here than "Other Lands"
             - example: Ash Barrens
 
+    Cycling Deserts:
+        example: Desert of the Mindful
+
     ETB Spell Lands:
         example: Halimar Depths
         text_re: >-
@@ -317,6 +320,12 @@ Main:
             \AIf ⦀name⦀ would enter the battlefield\, sacrifice an? (?:untapped )?(?:Plains|Island|Mountain|Forest|Swamp)
             instead\. If you do\, put ⦀name⦀ onto the battlefield\. If you don\'t\, put it into its owner\'s
             graveyard\.\R\{T\}\: Add [\{\}WURGBC]*\{[WURGB]\} to your mana pool\.\R.+
+
+    Sac Desert:
+        example: Ipnu Rivulet
+        text_re: >-
+            \A\{T\}\: Add \{C\} to your mana pool\.\R\{T\}\, Pay 1 life\: Add \{[WURGB]\} to your mana
+            pool\.\R\{\d\}(?:\{[WURGB]\})+\, \{T\}\, Sacrifice a Desert\: .+
 
     Zendikar Landmarks:
         # I hate using names for these, but they are so wildly different.
