@@ -224,6 +224,9 @@ foreach my $set (
         else {
             warn "Could not find MultiverseID for '$name'!\n";
         }
+
+        # Unfortunate manual additions/corrections for images
+        $card_data->{localLgImgURL} = $card_data->{localSmImgURL} if $name eq 'Path of Ancestry';
     }
 }
 
