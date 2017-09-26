@@ -276,6 +276,12 @@ Main:
         text_re: '\A\{T\}\: Add \{[WURGB]\} to your mana pool\.\R\{[WURGB]\}\, \{T\}\: .+legendary.+\z'
         type_re: Legendary
 
+    # These are the second halves of transform enchantments, but they are still worth cataloging
+    Legendary Transformers:
+        example: Azcanta, the Sunken Ruin
+        text_re: '\A\(Transforms from .+\.\)\R\{T\}\: Add \{[WURGB]\} to your mana pool\.\R.*\{T\}.*\: .+\z'
+        type_re: Legendary
+
     Mono Bounces:
         example: Coral Atoll
         alt_names:
